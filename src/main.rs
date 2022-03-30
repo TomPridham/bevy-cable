@@ -1,33 +1,5 @@
-mod jakobsen;
-mod verlet;
-
-use crate::jakobsen::jakobsen_system;
-use crate::verlet::simulate_verlet_system;
 use bevy::prelude::*;
-
-#[derive(Component, Debug)]
-pub struct Velocity {
-    translation: Vec3,
-}
-#[derive(Component)]
-pub struct CableNode {
-    previous_position: Vec3,
-}
-
-#[derive(Component)]
-pub struct CableHead {
-    node_distance: f32,
-}
-
-#[derive(Component)]
-pub struct Cable;
-
-#[derive(Component)]
-pub struct Constraint {
-    node_1: Entity,
-    node_2: Entity,
-    desired_distance: f32,
-}
+use bevy_cable::*;
 
 const SPRITE_SIZE: f32 = 75.0;
 const VERLET: &str = "verlet";
@@ -37,7 +9,6 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_system(simulate_verlet_system.label(VERLET))
         .add_system(jakobsen_system.after(VERLET))
-        //.add_system(jakobsen_system)
         .add_startup_system(setup)
         .run();
 }
@@ -50,9 +21,7 @@ fn setup(mut commands: Commands) {
             Velocity {
                 translation: Vec3::ZERO,
             },
-            CableHead {
-                node_distance: SPRITE_SIZE,
-            },
+            CableHead,
             Cable,
         ))
         .insert_bundle(SpriteBundle {
