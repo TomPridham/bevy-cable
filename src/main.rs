@@ -2,13 +2,11 @@ use bevy::prelude::*;
 use bevy_cable::*;
 
 const SPRITE_SIZE: f32 = 75.0;
-const VERLET: &str = "verlet";
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_system(simulate_verlet_system.label(VERLET))
-        .add_system(jakobsen_system.after(VERLET))
+        .add_plugin(CablePlugin)
         .add_startup_system(setup)
         .run();
 }
