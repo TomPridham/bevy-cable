@@ -10,3 +10,6 @@ license = "MIT"
 
 [dependencies]
 bevy = { version = "0.6.1", default-features = false, features = ["render"] }
+
+[dev-dependencies]
+bevy = "0.6.1"

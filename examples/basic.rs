@@ -58,7 +58,7 @@ fn setup(mut commands: Commands) {
                         previous_position: transform[i].translation,
                     },
                     Velocity {
-                        translation: transform[i].translation.normalize(),
+                        translation: Vec3::new(0.0, -9.8, 0.0),
                     },
                     Cable,
                 ))
