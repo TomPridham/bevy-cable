@@ -8,7 +8,5 @@ readme = "README.md"
 keywords = ["bevy", "rope", "cable", "physics", "ragdoll"]
 license = "MIT"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-bevy = "0.6.1"
+bevy = { version = "0.6.1", default-features = false, features = ["render"] }
