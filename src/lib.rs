@@ -13,6 +13,7 @@ pub struct Velocity {
 #[derive(Component)]
 pub struct CableNode {
     pub previous_position: Vec3,
+    pub fixed: bool,
 }
 
 #[derive(Component)]

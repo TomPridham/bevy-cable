@@ -1,4 +1,4 @@
-use crate::{Cable, Constraint, Velocity};
+use crate::{Cable, CableNode, Constraint};
 use bevy::prelude::*;
 
 pub fn relax_constraint(node_1: &Transform, node_2: &Transform, desired_distance: f32) -> Vec3 {
@@ -9,7 +9,7 @@ pub fn relax_constraint(node_1: &Transform, node_2: &Transform, desired_distance
 
 pub fn jakobsen_system(
     constraint_query: Query<&Constraint>,
-    mut node_query: Query<(&mut Transform, &mut Velocity), With<Cable>>,
+    mut node_query: Query<(&mut Transform, &CableNode), With<Cable>>,
 ) {
     for _ in 0..5 {
         for Constraint {
@@ -18,21 +18,32 @@ pub fn jakobsen_system(
             desired_distance,
         } in constraint_query.iter()
         {
-            let (t1, _) = if let Ok(c) = node_query.get(*node_1) {
-                c
+            let (t1, cable_node_1) = if let Ok(nq) = node_query.get(*node_1) {
+                nq
             } else {
                 continue;
             };
-            let (t2, _) = if let Ok(c) = node_query.get(*node_2) {
-                c
+            let (t2, cable_node_2) = if let Ok(nq) = node_query.get(*node_2) {
+                nq
             } else {
                 continue;
             };
+
+            let cable_node_1_fixed = cable_node_1.fixed;
+            let cable_node_2_fixed = cable_node_2.fixed;
+
             let d1 = relax_constraint(t1, t2, *desired_distance);
-            let (mut t1, _v1) = node_query.get_mut(*node_1).unwrap();
-            t1.translation += d1;
-            let (mut t2, _v2) = node_query.get_mut(*node_2).unwrap();
-            t2.translation -= d1;
+
+            let (mut t1, _) = node_query.get_mut(*node_1).unwrap();
+            if !cable_node_1_fixed {
+                let distance_factor = if cable_node_2_fixed { 2.0 } else { 1.0 };
+                t1.translation += d1 * distance_factor;
+            }
+            let (mut t2, _) = node_query.get_mut(*node_2).unwrap();
+            if !cable_node_2_fixed {
+                let distance_factor = if cable_node_1_fixed { 2.0 } else { 1.0 };
+                t2.translation -= d1 * distance_factor;
+            }
         }
     }
 }

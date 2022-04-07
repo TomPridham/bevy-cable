@@ -3,18 +3,21 @@ name: Test
 on:
   push:
     branches:
-      - '**'
-      - '!main'
+      - "**"
+      - "!main"
   pull_request:
     branches:
-      - '**'
-      - '!main'
+      - "**"
+      - "!main"
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install required system deps
+        run: sudo apt install g++ pkg-config libx11-dev libasound2-dev libudev-dev
+
       - uses: actions/checkout@v2
 
       - name: Install nightly toolchain
@@ -27,23 +30,6 @@ jobs:
         with:
           command: test
           toolchain: nightly
-        env:
-          PKGLS_LOG: debug
-          RUST_BACKTRACE: 1
-
-  coverage:
-    runs-on: ubuntu-latest
-
-    container:
-      image: xd009642/tarpaulin:develop-nightly
-      options: --security-opt seccomp=unconfined
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Run tests and generate code coverage
-        run: cargo +nightly tarpaulin --all-features --workspace --tests --timeout 120 --fail-under 0
         env:
           PKGLS_LOG: debug
           RUST_BACKTRACE: 1

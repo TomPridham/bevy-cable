@@ -22,6 +22,10 @@ fn setup(mut commands: Commands) {
                 translation: Vec3::ZERO,
             },
             CableHead,
+            CableNode {
+                previous_position: Vec3::ZERO,
+                fixed: true,
+            },
             Cable,
         ))
         .insert_bundle(SpriteBundle {
@@ -56,6 +60,7 @@ fn setup(mut commands: Commands) {
                 .insert_bundle((
                     CableNode {
                         previous_position: transform[i].translation,
+                        fixed: false,
                     },
                     Velocity {
                         translation: Vec3::new(0.0, -9.8, 0.0),
